@@ -1,6 +1,7 @@
 #include <Servo.h> 
 #include  <SoftwareSerial.h>
 #include <Wire.h>
+
 float distance=100;       
 float rdistance = 100;     
 float ldistance = 100;   
@@ -38,7 +39,7 @@ void setup()
   // start the robot car by putting my hand infront of the sensor
   while(distance > 2.5 ) 
      {
-      detect_front();
+      detect(90);
      } 
       delay(1000); 
 }
@@ -47,14 +48,16 @@ void setup()
 
 void loop()
 {
-  detect_front(); // detect the distance
+  detect(90); // detect the distance
   
   if (distance <10) // if too close to the obstacle
   {
+    stop_();
     while(distance<14) // reverse until the distance is safe
     {
-      back(); //reverse 
-      detect_front(); 
+      stop_();
+      reverse(); //reverse the robot car
+      detect(90); 
       delay(100);
     }
   }
@@ -70,6 +73,7 @@ void loop()
   follow_line(); // follow line
   }
 }
+
 
 
   
@@ -116,10 +120,10 @@ void follow_line() // following the line
 void avoid_obstacle()
 {
   
-detect_left(); // check if left side is blocked
+detect(60); // check if left side is blocked
 delay(400);
 
-detect_right(); // check if right side is blocked
+detect(120); // check if right side is blocked
 delay(400);
 
 myservo.write(90);
@@ -153,11 +157,11 @@ else if(ldistance<20 && rdistance<20) // Case 4: both sides are blocked
 {
   while(distance<15 && ldistance<20 && rdistance<20) // keep detecting the distances
   {
-  detect_left();
+  detect(60);
   delay(400);
-  detect_front();
+  detect(90);
   delay(400);
-  detect_right();
+  detect(120);
   delay(400);
   }
   if (distance>15){ // if obstacle removed, move forward
@@ -176,7 +180,7 @@ else if(ldistance<20 && rdistance<20) // Case 4: both sides are blocked
 void test1(){
   while(distance<15)
  {
-  detect_front();
+  detect(90);
   delay(200);
  }
  move_forward(50);
@@ -185,11 +189,11 @@ void test1(){
 void test2(){
    while(distance<15 && ldistance<20 && rdistance<20)
   {
-  detect_left();
+  detect(60);
   delay(400);
-  detect_front();
+  detect(90);
   delay(400);
-  detect_right();
+  detect(120);
   delay(400);
   }
   if (distance>15){
@@ -273,7 +277,7 @@ void reverse() //reverse
     digitalWrite(pinI4, 1);
 }
 
-void avoid_by_right() // avoid the obstalce by going right side
+void avoid_by_right() // avoid the obstacle by going right side
 { 
     turn_right();
     delay(300);
@@ -287,13 +291,14 @@ void avoid_by_right() // avoid the obstalce by going right side
     myservo.write(180);
     delay(200);
 
-    detect_front();
-
-    while(distance<10) // this step is to make sure the robot car completely passed the obstacle
+    detect(90);
+    
+// this step is to make sure the robot car completely passed the obstacle
+    while(distance<10) 
     { 
     
     move_forward(60);
-    detect_front();
+    detect(90);
     }
     myservo.write(90);
     delay(200);
@@ -306,7 +311,7 @@ void avoid_by_right() // avoid the obstalce by going right side
     }
 
 
-void avoid_by_left() // avoid the obstalce by going left side
+void avoid_by_left() // avoid the obstacle by going left side
 { 
     turn_left();
     delay(300);
@@ -320,11 +325,11 @@ void avoid_by_left() // avoid the obstalce by going left side
     myservo.write(0);
     delay(200);
 
-    detect_front();
+    detect(90);
     while(distance<10){
     
     move_forward(60);
-    detect_front();
+    detect(90);
     }
     myservo.write(90);
     delay(200);
