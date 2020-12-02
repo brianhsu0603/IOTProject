@@ -50,13 +50,13 @@ void loop()
 {
   detect(90); // detect the distance
   
-  if (distance <10) // if too close to the obstacle
+  if (distance <14) // if too close to the obstacle
   {
     stop_();
     while(distance<14) // reverse until the distance is safe
     {
-      stop_();
       reverse(); //reverse the robot car
+      stop_();
       detect(90); 
       delay(100);
     }
